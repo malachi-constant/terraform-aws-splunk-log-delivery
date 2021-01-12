@@ -12,6 +12,7 @@ locals {
 ##################
 # lambda
 ##################
+
 # create iam role for firehose lambda function
 resource "aws_iam_role" "lambda" {
   name               = join("-", [var.prefix, "lambda"])
@@ -218,7 +219,7 @@ resource "aws_kinesis_firehose_delivery_stream" "this" {
 resource "aws_s3_bucket" "failures" {
   bucket        = join("-", [var.prefix, "delivery-failures"])
   force_destroy = true
-  
+
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
