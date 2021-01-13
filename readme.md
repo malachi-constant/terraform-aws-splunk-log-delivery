@@ -5,7 +5,7 @@
 - Terraform
 
 ## Diagram
-[AWS resources](./images/terraform-aws-splunk-log-delivery.jpg)
+![AWS Resources](./images/terraform-aws-splunk-log-delivery.jpg)
 
 ### Example Instantiation
 ```
