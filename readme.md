@@ -58,7 +58,6 @@ module "splunk_delivery" {
 | memory\_size | Timeout value for Lambda function | `number` | `256` | no |
 | nodejs\_runtime | Runtime version of nodejs for Lambda function | `string` | `"nodejs12.x"` | no |
 | prefix | Prefix for naming resources | `string` | `"splunk-test"` | no |
-| s3\_access\_logs\_bucket | Name of the S3 bucket for S3 access logs | `any` | `null` | no |
 | s3\_backup\_mode | Defines how documents should be delivered to Amazon S3. Valid values are FailedEventsOnly and AllEvents. | `string` | `"FailedEventsOnly"` | no |
 | s3\_bucket\_versioning | Enable bucket versioning. | `bool` | `true` | no |
 | s3\_compression\_format | The compression format for what the Kinesis Firehose puts in the s3 bucket | `string` | `"GZIP"` | no |
