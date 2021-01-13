@@ -20,7 +20,7 @@ variable "enable_logs_encryption" {
 
 variable "kms_alias" {
   description = "Alias for the KMS key"
-  default     = "alias/splunk-delivery"
+  default     = "splunk-delivery"
 }
 
 variable "kms_description" {
@@ -102,11 +102,6 @@ variable "s3_compression_format" {
 variable "s3_prefix" {
   description = "Optional prefix (a slash after the prefix will show up as a folder in the s3 bucket).  The YYYY/MM/DD/HH time format prefix is automatically used for delivered S3 files."
   default     = "kinesis-firehose/"
-}
-
-variable "s3_access_logs_bucket" {
-  description = "Name of the S3 bucket for S3 access logs"
-  default     = null
 }
 
 variable "s3_bucket_versioning" {

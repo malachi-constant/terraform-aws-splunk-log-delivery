@@ -15,6 +15,7 @@ locals {
 
 # kms key
 resource "aws_kms_key" "this" {
+  count               = var.enable_logs_encryption == true ? 1 : 0
   description         = var.kms_description
   enable_key_rotation = var.enable_key_rotation
   policy              = var.kms_key_policy == null ? data.aws_iam_policy_document.this.0.json : var.kms_key_policy
@@ -62,8 +63,9 @@ data "aws_iam_policy_document" "this" {
 
 # kms alias
 resource "aws_kms_alias" "this" {
-  name          = var.kms_alias
-  target_key_id = aws_kms_key.this.key_id
+  count               = var.enable_logs_encryption == true ? 1 : 0
+  name          = join("", ["alias/", var.kms_alias])
+  target_key_id = aws_kms_key.this[0].key_id
 }
 
 ##################
@@ -138,7 +140,7 @@ resource "aws_lambda_function" "this" {
 
 resource "aws_cloudwatch_log_group" "kinesis_firehose_lambda_logs" {
   name       = join("/", ["/aws/lambda", join("-", [var.prefix, local.lambda_name])])
-  kms_key_id = aws_kms_key.this.arn
+  kms_key_id = var.enable_logs_encryption == true ? aws_kms_key.this[0].arn : null
 }
 
 ##################
@@ -324,7 +326,7 @@ data "aws_iam_policy_document" "delivery_failure_logs" {
 resource "aws_cloudwatch_log_group" "kinesis_logs" {
   name              = "/aws/kinesisfirehose/${join("-", [var.prefix, "splunk-delivery-stream"])}"
   retention_in_days = var.cloudwatch_log_retention
-  kms_key_id        = aws_kms_key.this.arn
+  kms_key_id        = var.enable_logs_encryption == true ? aws_kms_key.this[0].arn : null
   tags              = var.tags
 }
 

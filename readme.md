@@ -1,10 +1,13 @@
 # Usage
-#### Prerequisites
+## Prerequisites
 - Splunk HTTP Event Collector (URL & Token)
 - AWS Account
 - Terraform
 
-#### Example Instantiation
+## Diagram
+[AWS resources](./images/terraform-aws-splunk-log-delivery.jpg)
+
+### Example Instantiation
 ```
 
 module "splunk_delivery" {
@@ -15,11 +18,11 @@ module "splunk_delivery" {
 }
 ```
 
-#### Example Configuration
+### Example Configuration
 - see simple example: [`./examples/simple/main.tf`](./tests/simple/main.tf)
 - see complete example: [`./examples/complete/main.tf`](./tests/complete/main.tf)
 
-#### Validate
+### Validate
 1. deploy module: `cd ./examples/simple && terraform apply`
 2. add log event: `> aws logs put-log-events --log-group-name splunk-delivery-test --log-stream-name splunk-delivery-test --log-events timestamp=1610561892000,message=hello`
 3. validate event in splunk
