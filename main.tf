@@ -10,6 +10,63 @@ locals {
 }
 
 ##################
+# kms
+##################
+
+# kms key
+resource "aws_kms_key" "this" {
+  description         = var.kms_description
+  enable_key_rotation = var.enable_key_rotation
+  policy              = var.kms_key_policy == null ? data.aws_iam_policy_document.this.0.json : var.kms_key_policy
+}
+
+# kms key policy
+data "aws_iam_policy_document" "this" {
+  count = var.kms_key_policy == null ? 1 : 0
+
+  statement {
+    actions = [
+      "kms:*"
+    ]
+    resources = [
+      "*"
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = [join("", ["arn:aws:iam::", data.aws_caller_identity.this.account_id, ":root"])]
+    }
+  }
+
+  statement {
+    sid = "Allow logs access"
+    actions = [
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:CreateGrant"
+    ]
+    resources = [
+      "*"
+    ]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        join("", ["logs.", data.aws_region.this.name, ".amazonaws.com"])
+      ]
+    }
+  }
+}
+
+# kms alias
+resource "aws_kms_alias" "this" {
+  name          = var.kms_alias
+  target_key_id = aws_kms_key.this.key_id
+}
+
+##################
 # lambda
 ##################
 
@@ -79,15 +136,9 @@ resource "aws_lambda_function" "this" {
   tags             = var.tags
 }
 
-module "logging_kms_key" {
-  source          = "../logging_kms_key"
-  key_description = "firehose_lambda_loggroup_key"
-  key_alias_name  = "alias/firehose_lambda_loggroup_key"
-
-}
 resource "aws_cloudwatch_log_group" "kinesis_firehose_lambda_logs" {
   name       = join("/", ["/aws/lambda", join("-", [var.prefix, local.lambda_name])])
-  kms_key_id = module.logging_kms_key.logging_kms_key_arn
+  kms_key_id = aws_kms_key.this.arn
 }
 
 ##################
@@ -206,7 +257,7 @@ resource "aws_kinesis_firehose_delivery_stream" "this" {
     }
 
     cloudwatch_logging_options {
-      enabled         = var.enable_fh_cloudwatch_logging
+      enabled         = var.enable_firehose_cloudwatch_logging
       log_group_name  = aws_cloudwatch_log_group.kinesis_logs.name
       log_stream_name = aws_cloudwatch_log_stream.kinesis_logs.name
     }
@@ -229,12 +280,7 @@ resource "aws_s3_bucket" "failures" {
   }
 
   versioning {
-    enabled = true
-  }
-
-  logging {
-    target_bucket = var.s3_access_logs_bucket
-    target_prefix = "log/"
+    enabled = var.s3_bucket_versioning
   }
 
   tags = var.tags
@@ -278,7 +324,7 @@ data "aws_iam_policy_document" "delivery_failure_logs" {
 resource "aws_cloudwatch_log_group" "kinesis_logs" {
   name              = "/aws/kinesisfirehose/${join("-", [var.prefix, "splunk-delivery-stream"])}"
   retention_in_days = var.cloudwatch_log_retention
-  kms_key_id        = module.logging_kms_key.logging_kms_key_arn
+  kms_key_id        = aws_kms_key.this.arn
   tags              = var.tags
 }
 

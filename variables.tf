@@ -12,6 +12,32 @@ variable "tags" {
   default     = {}
 }
 
+# kms
+variable "enable_logs_encryption" {
+  description = "enable kms encyrption for cloudwatch logs"
+  default     = true
+}
+
+variable "kms_alias" {
+  description = "Alias for the KMS key"
+  default     = "alias/splunk-delivery"
+}
+
+variable "kms_description" {
+  description = "KMS key description"
+  default     = null
+}
+
+variable "kms_key_policy" {
+  description = "JSON of kms key policy"
+  default     = null
+}
+
+variable "enable_key_rotation" {
+  description = "Enable KMS key rotation"
+  default     = false
+}
+
 # lambda
 variable "nodejs_runtime" {
   description = "Runtime version of nodejs for Lambda function"
@@ -57,7 +83,7 @@ variable "hec_endpoint_type" {
   default     = "Raw"
 }
 
-variable "enable_fh_cloudwatch_logging" {
+variable "enable_firehose_cloudwatch_logging" {
   description = "Enable kinesis firehose CloudWatch logging. (It only logs errors)"
   default     = true
 }
@@ -81,6 +107,11 @@ variable "s3_prefix" {
 variable "s3_access_logs_bucket" {
   description = "Name of the S3 bucket for S3 access logs"
   default     = null
+}
+
+variable "s3_bucket_versioning" {
+  description = "Enable bucket versioning."
+  default = true
 }
 
 # cw logs

@@ -10,8 +10,13 @@ module "splunk_delivery" {
 }
 ```
 
-see `./tests/example.tf`
+see simple example: [`./examples/simple/main.tf`](./tests/simple/main.tf)
+see complete example: [`./examples/complete/main.tf`](./tests/complete/main.tf)
 
+#### Validate
+1. deploy module: `cd ./examples/simple && terraform apply`
+2. add log event: `> aws logs put-log-events --log-group-name splunk-delivery-test --log-stream-name splunk-delivery-test --log-events timestamp=1610561892000,message=hello`
+3. validate event [cloudwatch event](./images/validate-cw-event.png)
 ## Requirements
 
 | Name | Version |
