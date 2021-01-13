@@ -16,7 +16,7 @@ see `./tests/example.tf`
 
 | Name | Version |
 |------|---------|
-| terraform | ~> 0.12.0 |
+| terraform | >= 0.12.0 |
 
 ## Providers
 
@@ -38,6 +38,7 @@ see `./tests/example.tf`
 | memory\_size | Timeout value for Lambda function | `number` | `256` | no |
 | nodejs\_runtime | Runtime version of nodejs for Lambda function | `string` | `"nodejs12.x"` | no |
 | prefix | Prefix for naming resources | `string` | `"splunk-test"` | no |
+| s3\_access\_logs\_bucket | Name of the S3 bucket for S3 access logs | `any` | `null` | no |
 | s3\_backup\_mode | Defines how documents should be delivered to Amazon S3. Valid values are FailedEventsOnly and AllEvents. | `string` | `"FailedEventsOnly"` | no |
 | s3\_compression\_format | The compression format for what the Kinesis Firehose puts in the s3 bucket | `string` | `"GZIP"` | no |
 | s3\_prefix | Optional prefix (a slash after the prefix will show up as a folder in the s3 bucket).  The YYYY/MM/DD/HH time format prefix is automatically used for delivered S3 files. | `string` | `"kinesis-firehose/"` | no |
