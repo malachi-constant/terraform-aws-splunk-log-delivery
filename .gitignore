@@ -1,5 +1,6 @@
 *tfstate*
-./terraform
+.terraform
 *tfplan*
 .DS_Store
 *.zip
+*.terraform*
