@@ -421,5 +421,5 @@ data "aws_iam_policy_document" "destination_policy" {
 
 resource "aws_cloudwatch_log_destination_policy" "this" {
   destination_name = aws_cloudwatch_log_destination.this.name
-  access_policy    = data.aws_iam_policy_document.destination_policy.jsons
+  access_policy    = data.aws_iam_policy_document.destination_policy.json
 }
