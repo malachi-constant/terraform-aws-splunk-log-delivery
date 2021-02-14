@@ -299,8 +299,8 @@ data "aws_iam_policy_document" "delivery_failure_logs" {
     effect = "Deny"
 
     resources = [
-      "${aws_s3_bucket.failures.arn}",
-      "${aws_s3_bucket.failures.arn}/*",
+      aws_s3_bucket.failures.arn,
+      join("", [aws_s3_bucket.failures.arn, "/*"])
     ]
 
     principals {
